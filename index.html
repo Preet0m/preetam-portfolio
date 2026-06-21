@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preetam Kambar | Cloud & DevOps Engineer</title>
+<title>Preetam Kambar — Cloud & DevOps Engineer</title>
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,6 +75,15 @@
     100%{ top:100vh; }
   }
 
+  /* ---------- Network topology canvas ---------- */
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.65;
+  }
+
   .wrap{
     position:relative;
     z-index:1;
@@ -82,6 +91,53 @@
     margin:0 auto;
     padding:0 32px;
   }
+
+  /* ---------- Scroll progress bar ---------- */
+  .scroll-progress{
+    position:fixed; top:0; left:0; height:2px;
+    background:linear-gradient(90deg, var(--accent), var(--cyan));
+    width:0%;
+    z-index:50;
+    transition:width .08s linear;
+  }
+
+  /* ---------- Cursor glow ---------- */
+  .cursor-glow{
+    position:fixed;
+    top:0; left:0;
+    width:420px; height:420px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,138,61,0.10), transparent 70%);
+    pointer-events:none;
+    z-index:0;
+    transform:translate(-50%,-50%);
+    will-change:transform;
+  }
+
+  /* ---------- Terminal log (ambient line near pipeline) ---------- */
+  .term-log{
+    margin-top:14px;
+    border:1px solid var(--border);
+    background:#070D15;
+    border-radius:var(--radius);
+    padding:12px 16px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ok);
+    min-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+  .term-log .term-prompt{ color:var(--accent); margin-right:8px; }
+  .term-log .term-text{ color:var(--ok); }
+  .term-log .term-cursor{
+    display:inline-block; width:7px; margin-left:2px;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Card tilt interaction ---------- */
+  .skill-card, .project-card{ will-change:transform; transform-style:preserve-3d; }
 
   /* ---------- Top nav ---------- */
   header.nav{
@@ -209,23 +265,61 @@
   .stage-label{ font-family:var(--mono); font-size:13px; fill:var(--text); font-weight:600;}
   .stage-sub{ font-family:var(--mono); font-size:9.5px; fill:var(--text-faint); }
 
-  /* ---------- Status strip ---------- */
-  .status-strip{
+  /* ---------- Interactive terminal ---------- */
+  .terminal{
     margin-top:18px;
     border:1px solid var(--border);
     background:var(--bg-elevated);
     border-radius:var(--radius);
-    padding:16px 20px;
-    font-family:var(--mono); font-size:12.5px; color:var(--text-dim);
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:12px 24px;
+    overflow:hidden;
   }
-  .status-strip .row{ display:flex; gap:10px; }
-  .status-strip .key{ color:var(--text-faint); min-width:84px; }
-  .status-strip .val{ color:var(--text); }
-  .dot-ok{
-    width:7px;height:7px;border-radius:50%;background:var(--ok); display:inline-block; margin-right:8px;
-    animation:pulse 2.4s ease-out infinite;
+  .terminal-head{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:11.5px; color:var(--text-faint);
+  }
+  .terminal-dot{ width:9px; height:9px; border-radius:50%; }
+  .terminal-dot.r{ background:#FF5F57; }
+  .terminal-dot.y{ background:#FEBC2E; }
+  .terminal-dot.g{ background:#28C840; }
+  .terminal-path{ margin-left:8px; }
+  .terminal-body{
+    padding:16px 18px 14px;
+    font-family:var(--mono); font-size:13px; color:var(--text-dim);
+    max-height:220px; overflow-y:auto;
+  }
+  .terminal-body::-webkit-scrollbar{ width:6px; }
+  .terminal-body::-webkit-scrollbar-thumb{ background:var(--border); border-radius:4px; }
+  .terminal-line{ margin-bottom:6px; line-height:1.55; white-space:pre-wrap; word-break:break-word; }
+  .terminal-line.cmd{ color:var(--cyan); }
+  .terminal-line .prompt{ color:var(--ok); }
+  .terminal-line a{ color:var(--accent); }
+  .terminal-input-row{ display:flex; align-items:center; gap:8px; }
+  .terminal-input-row .prompt{ color:var(--ok); font-family:var(--mono); font-size:13px; flex-shrink:0; }
+  .terminal-input{
+    flex:1; background:transparent; border:none; outline:none;
+    font-family:var(--mono); font-size:13px; color:var(--text);
+    caret-color:var(--accent);
+  }
+  .terminal-hint{ color:var(--text-faint); font-size:11px; margin-top:10px; }
+
+  /* ---------- Stats strip ---------- */
+  .stats-strip{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:18px; margin-top:36px;
+  }
+  .stat-card{
+    border:1px solid var(--border); background:var(--bg-card); border-radius:var(--radius);
+    padding:20px; text-align:left;
+  }
+  .stat-num{
+    font-family:var(--mono); font-weight:700; font-size:32px; color:var(--accent);
+    line-height:1;
+  }
+  .stat-label{
+    font-family:var(--mono); font-size:11px; color:var(--text-faint);
+    letter-spacing:0.04em; text-transform:uppercase; margin-top:8px;
   }
 
   /* ---------- Sections generic ---------- */
@@ -258,8 +352,10 @@
   }
   .skill-card{
     border:1px solid var(--border); background:var(--bg-card); border-radius:var(--radius);
-    padding:22px; transition:border-color .2s ease, transform .2s ease;
+    padding:22px; transition:border-color .2s ease, transform .12s ease;
     position:relative;
+    transform-style:preserve-3d;
+    will-change:transform;
   }
   .skill-card:hover{ border-color:var(--accent); transform:translateY(-3px); }
   .skill-card .icon{
@@ -283,7 +379,9 @@
   }
   .project-card{
     border:1px solid var(--border); background:var(--bg-card); border-radius:var(--radius);
-    padding:26px; transition:border-color .2s ease, transform .2s ease; display:flex; flex-direction:column;
+    padding:26px; transition:border-color .2s ease, transform .12s ease; display:flex; flex-direction:column;
+    transform-style:preserve-3d;
+    will-change:transform;
   }
   .project-card:hover{ border-color:var(--accent); transform:translateY(-3px); }
   .project-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px; }
@@ -393,12 +491,15 @@
 </head>
 <body>
 
+<div class="scroll-progress" id="scroll-progress"></div>
+<div class="cursor-glow" id="cursor-glow"></div>
 <div class="grid-bg"></div>
+<canvas id="bg-canvas"></canvas>
 <div class="scan-line"></div>
 
 <header class="nav">
   <div class="nav-inner">
-   <div class="logo">~/<span>preetam-b-kambar</span></div>
+    <div class="logo">~/<span>preetam-kambar</span></div>
     <nav class="links">
       <a href="#summary">Summary</a>
       <a href="#skills">Skills</a>
@@ -483,14 +584,27 @@
           <text x="820" y="106" text-anchor="middle" class="stage-sub">SSL secured</text>
         </g>
       </svg>
+      <div class="term-log" aria-hidden="true">
+        <span class="term-prompt">$</span><span class="term-text" id="termText"></span><span class="term-cursor">▋</span>
+      </div>
     </div>
 
-    <div class="status-strip">
-      <div class="row"><span class="key">location</span><span class="val">Karnataka, India</span></div>
-      <div class="row"><span class="key">phone</span><span class="val">+91 72599 27098</span></div>
-      <div class="row"><span class="key">focus</span><span class="val">Cloud · DevOps · SRE</span></div>
-      <div class="row"><span class="key">availability</span><span class="val"><span class="dot-ok"></span>open to roles</span></div>
+    <div class="terminal reveal" id="terminal-block">
+      <div class="terminal-head">
+        <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
+        <span class="terminal-path">guest@preetam-portfolio: ~</span>
+      </div>
+      <div class="terminal-body" id="terminal-output">
+        <div class="terminal-line">Welcome. Type <span class="cmd">help</span> to see what's available.</div>
+      </div>
+      <div class="terminal-body" style="padding-top:0; border-top:1px solid var(--border);">
+        <div class="terminal-input-row">
+          <span class="prompt">$</span>
+          <input class="terminal-input" id="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="type a command…">
+        </div>
+      </div>
     </div>
+    <p class="terminal-hint">try: help · whoami · skills · projects · contact · sudo hire-me</p>
   </section>
 
   <!-- SUMMARY -->
@@ -502,6 +616,24 @@
     <p class="summary-text reveal">
       I'm a Cloud &amp; DevOps Engineer who likes turning manual, error-prone deployment work into something repeatable and automated. During my internship and personal projects, I deployed applications on <strong>AWS EC2</strong> using <strong>Docker, Nginx, Cloudflare, and SSL</strong>, and built out deployment workflows around them. I'm comfortable across the stack that gets code from a repository to a running service — containers, CI/CD pipelines, and Linux infrastructure underneath it all. I'm currently looking for a role as a <strong>Cloud Engineer, DevOps Engineer, or Site Reliability Engineer</strong>, where I can keep building on infrastructure automation and continuous delivery.
     </p>
+    <div class="stats-strip">
+      <div class="stat-card reveal">
+        <div class="stat-num" data-count="7.67" data-decimals="2">0</div>
+        <div class="stat-label">CGPA</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-num" data-count="5">0</div>
+        <div class="stat-label">Certifications</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-num" data-count="2">0</div>
+        <div class="stat-label">Projects Shipped</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-num" data-count="5">0</div>
+        <div class="stat-label">Months Hands-on</div>
+      </div>
+    </div>
   </section>
 
   <!-- SKILLS -->
@@ -698,6 +830,148 @@
 </main>
 
 <script>
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Background network topology ----------
+  (function(){
+    const canvas = document.getElementById('bg-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, nodes, pulses, dpr;
+
+    const styles = getComputedStyle(document.documentElement);
+    const colBorder = 'rgba(120,165,210,0.5)';
+    const colCyan = styles.getPropertyValue('--cyan').trim() || '#4FC3D9';
+    const colAccent = styles.getPropertyValue('--accent').trim() || '#FF8A3D';
+    const colOk = styles.getPropertyValue('--ok').trim() || '#5FD68A';
+    const pulseColors = [colAccent, colCyan, colOk];
+
+    function resize(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      initNodes();
+    }
+
+    function initNodes(){
+      const count = Math.max(18, Math.min(46, Math.round((W*H)/42000)));
+      nodes = Array.from({length:count}, ()=>({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        vx: (Math.random()-0.5) * 0.12,
+        vy: (Math.random()-0.5) * 0.12,
+        r: Math.random()*1.4 + 1.2
+      }));
+      pulses = [];
+    }
+
+    const LINK_DIST = 170;
+
+    function maybeSpawnPulse(){
+      if(Math.random() > 0.985 && nodes.length > 1){
+        const a = nodes[Math.floor(Math.random()*nodes.length)];
+        // find a neighbor within link distance
+        let candidates = nodes.filter(n => n!==a && Math.hypot(n.x-a.x, n.y-a.y) < LINK_DIST);
+        if(candidates.length){
+          const b = candidates[Math.floor(Math.random()*candidates.length)];
+          pulses.push({ a, b, t:0, color: pulseColors[Math.floor(Math.random()*pulseColors.length)] });
+        }
+      }
+    }
+
+    function step(){
+      ctx.clearRect(0,0,W,H);
+
+      // update + draw nodes
+      nodes.forEach(n=>{
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < -20) n.x = W+20; if(n.x > W+20) n.x = -20;
+        if(n.y < -20) n.y = H+20; if(n.y > H+20) n.y = -20;
+      });
+
+      // draw links
+      ctx.lineWidth = 1;
+      for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+          const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+          const dist = Math.hypot(dx,dy);
+          if(dist < LINK_DIST){
+            const alpha = (1 - dist/LINK_DIST) * 0.16;
+            ctx.strokeStyle = `rgba(120,165,210,${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // draw nodes
+      nodes.forEach(n=>{
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(143,164,184,0.55)';
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fill();
+      });
+
+      // pulses (traveling packets along edges)
+      maybeSpawnPulse();
+      pulses = pulses.filter(p => p.t <= 1);
+      pulses.forEach(p=>{
+        p.t += 0.012;
+        const x = p.a.x + (p.b.x - p.a.x) * p.t;
+        const y = p.a.y + (p.b.y - p.a.y) * p.t;
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 0.85 * (1 - Math.abs(p.t-0.5)*0.6);
+        ctx.arc(x, y, 2.6, 0, Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+
+      requestAnimationFrame(step);
+    }
+
+    function drawStatic(){
+      // single static frame for reduced-motion users
+      ctx.clearRect(0,0,W,H);
+      ctx.lineWidth = 1;
+      for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+          const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+          const dist = Math.hypot(dx,dy);
+          if(dist < LINK_DIST){
+            const alpha = (1 - dist/LINK_DIST) * 0.14;
+            ctx.strokeStyle = `rgba(120,165,210,${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      nodes.forEach(n=>{
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(143,164,184,0.5)';
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fill();
+      });
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    if(prefersReducedMotion){
+      drawStatic();
+    } else {
+      requestAnimationFrame(step);
+    }
+  })();
+
   // Scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
@@ -711,7 +985,151 @@
   window.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('pipeline-block').classList.add('in');
     document.getElementById('hero-photo-block').classList.add('in');
+    const tb = document.getElementById('terminal-block');
+    if(tb) tb.classList.add('in');
   });
+
+  // ---------- Scroll progress bar ----------
+  const scrollProgress = document.getElementById('scroll-progress');
+  function updateScrollProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    if(scrollProgress) scrollProgress.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateScrollProgress, { passive:true });
+  updateScrollProgress();
+
+  // ---------- Cursor glow (desktop only) ----------
+  const cursorGlow = document.getElementById('cursor-glow');
+  if(cursorGlow && matchMedia('(pointer:fine)').matches && !prefersReducedMotion){
+    window.addEventListener('mousemove', (e)=>{
+      cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
+    }, { passive:true });
+  } else if(cursorGlow){
+    cursorGlow.style.display = 'none';
+  }
+
+  // ---------- Ambient deploy log (typewriter) ----------
+  const termText = document.getElementById('termText');
+  const logLines = [
+    'building docker image...',
+    'image built ✓',
+    'running gitlab ci/cd pipeline...',
+    'tests passed ✓',
+    'deploying to aws ec2...',
+    'nginx configured, ssl active ✓',
+    'deployment live ✓'
+  ];
+  if(termText){
+    if(prefersReducedMotion){
+      termText.textContent = logLines[logLines.length-1];
+    } else {
+      let li = 0, ci = 0, deleting = false;
+      function typeLoop(){
+        const current = logLines[li];
+        if(!deleting){
+          ci++;
+          termText.textContent = current.slice(0, ci);
+          if(ci === current.length){
+            deleting = true;
+            setTimeout(typeLoop, 1100);
+            return;
+          }
+        } else {
+          ci--;
+          termText.textContent = current.slice(0, ci);
+          if(ci === 0){
+            deleting = false;
+            li = (li + 1) % logLines.length;
+          }
+        }
+        setTimeout(typeLoop, deleting ? 25 : 38);
+      }
+      typeLoop();
+    }
+  }
+
+  // ---------- Stat count-up ----------
+  const statNums = document.querySelectorAll('.stat-num[data-count]');
+  const statIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.count);
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      if(prefersReducedMotion){
+        el.textContent = target.toFixed(decimals);
+      } else {
+        const duration = 1200;
+        const start = performance.now();
+        function tick(now){
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (target * eased).toFixed(decimals);
+          if(p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+      statIO.unobserve(el);
+    });
+  }, { threshold:0.4 });
+  statNums.forEach(el=>statIO.observe(el));
+
+  // ---------- Card tilt ----------
+  if(matchMedia('(pointer:fine)').matches && !prefersReducedMotion){
+    document.querySelectorAll('.skill-card, .project-card').forEach(card=>{
+      card.style.perspective = '700px';
+      card.addEventListener('mousemove', (e)=>{
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `translateY(-3px) rotateX(${(-y*7).toFixed(2)}deg) rotateY(${(x*7).toFixed(2)}deg)`;
+      });
+      card.addEventListener('mouseleave', ()=>{
+        card.style.transform = '';
+      });
+    });
+  }
+
+  // ---------- Interactive terminal ----------
+  const termOutput = document.getElementById('terminal-output');
+  const termInput = document.getElementById('terminal-input');
+  const commands = {
+    help: `Available commands: <span class="cmd">whoami</span>, <span class="cmd">skills</span>, <span class="cmd">projects</span>, <span class="cmd">contact</span>, <span class="cmd">sudo hire-me</span>, <span class="cmd">clear</span>`,
+    whoami: `Preetam Kambar — Cloud &amp; DevOps Engineer based in Karnataka, India. Open to Cloud Engineer, DevOps Engineer, and SRE roles.`,
+    skills: `AWS (EC2, S3, IAM, VPC) · Docker · Kubernetes · GitLab CI/CD · Jenkins · Linux · Nginx · Git &amp; GitHub`,
+    projects: `1) HOOBANK Deployment Project — AWS EC2, Docker, GitLab CI/CD, Nginx<br>2) CI/CD Automation Project — React, GitLab CI/CD<br>Run <span class="cmd">cd projects</span> on the page above to see details ↑`,
+    contact: `Email: <a href="mailto:pritamkambar4@gmail.com">pritamkambar4@gmail.com</a> · Phone: +91 72599 27098 · <a href="https://www.linkedin.com/in/preetam-b-kambar" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/preet0m" target="_blank" rel="noopener">GitHub</a>`,
+    'sudo hire-me': `Permission granted ✓ — redirecting to email...`,
+    clear: null
+  };
+  function addLine(html, isCmd){
+    const div = document.createElement('div');
+    div.className = 'terminal-line' + (isCmd ? ' cmd' : '');
+    div.innerHTML = isCmd ? `<span class="prompt">$</span> ${html}` : html;
+    termOutput.appendChild(div);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+  if(termInput){
+    termInput.addEventListener('keydown', (e)=>{
+      if(e.key !== 'Enter') return;
+      const raw = termInput.value.trim();
+      if(!raw) return;
+      addLine(raw, true);
+      const key = raw.toLowerCase();
+      if(key === 'clear'){
+        termOutput.innerHTML = '';
+      } else if(commands.hasOwnProperty(key)){
+        addLine(commands[key]);
+        if(key === 'sudo hire-me'){
+          setTimeout(()=>{ window.location.href = 'mailto:pritamkambar4@gmail.com'; }, 700);
+        }
+      } else {
+        addLine(`command not found: ${raw}. Type <span class="cmd">help</span> for options.`);
+      }
+      termInput.value = '';
+    });
+  }
 </script>
 
 </body>
