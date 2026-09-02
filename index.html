@@ -942,13 +942,13 @@ dialog[open]::backdrop{animation:bdIn .3s ease both}
           <div class="pstack"><span>AWS</span><span>Docker</span><span>GitLab CI/CD</span><span>Nginx</span></div>
           <button type="button" class="btn sm more" data-modal="dlg-pipeline">Project details <span class="arw" aria-hidden="true">↗</span></button>
         </article>
-        <article class="proj tilt" style="--i:1">
-          <span class="pnum">02 / GitOps</span>
-          <h3>K8s GitOps Pipeline</h3>
-          <p>Git-driven Kubernetes deployment on kind with ArgoCD auto-sync, live metrics, and three real failures debugged end to end.</p>
-          <div class="pstack"><span>Kubernetes</span><span>ArgoCD</span><span>Kustomize</span><span>Prometheus/Grafana</span></div>
-          <button type="button" class="btn sm more" data-modal="dlg-gitops">Project details <span class="arw" aria-hidden="true">↗</span></button>
-        </article>
+       <article class="proj tilt" style="--i:1">
+  <span class="pnum">02 / GitOps</span>
+  <h3>K8s GitOps Pipeline</h3>
+  <p>End-to-end GitOps pipeline on a local Kind cluster — GitHub Actions builds and pushes images, ArgoCD auto-syncs staging, prod requires manual promotion. Zero manual kubectl.</p>
+  <div class="pstack"><span>Kubernetes</span><span>ArgoCD</span><span>GitHub Actions</span><span>Kustomize</span><span>Prometheus/Grafana</span></div>
+  <button type="button" class="btn sm more" data-modal="dlg-gitops">Project details <span class="arw" aria-hidden="true">↗</span></button>
+</article>
        <article class="proj tilt" style="--i:2">
   <span class="pnum">03 / Web platform</span>
   <h3>File Vault - Self-Hosted File Storage Platform</h3>
@@ -1118,15 +1118,17 @@ dialog[open]::backdrop{animation:bdIn .3s ease both}
     <button type="button" class="x" data-close aria-label="Close dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <p class="eyebrow">Selected project / GitOps</p>
     <h3 id="dlg-gitops-h">K8s GitOps Pipeline</h3>
-    <div class="meta"><span>Kubernetes</span><span>ArgoCD</span><span>Kustomize</span><span>Prometheus/Grafana</span></div>
-    <p>Deployed a Kubernetes GitOps workflow on kind, with ArgoCD auto-syncing manifests from Git and Prometheus/Grafana monitoring live application metrics.</p>
+    <div class="meta"><span>Kubernetes</span><span>ArgoCD</span><span>GitHub Actions</span><span>Kustomize</span><span>Prometheus/Grafana</span></div>
+    <p>Built an end-to-end GitOps pipeline running entirely on a local Kind cluster, going deeper into production-style DevOps patterns with no manual kubectl in the delivery path.</p>
     <ul>
-      <li>Diagnosed and resolved a Kustomize image-reference bug.</li>
-      <li>Resolved an Ingress host conflict caught by the NGINX admission webhook.</li>
-      <li>Recovered from a live-injected liveness-probe failure via <code>git revert</code> rather than manual patching.</li>
-      <li>Used Git as the single source of truth for deployment and recovery.</li>
+      <li>CI/CD: GitHub Actions runs tests, then builds and pushes a Docker image on every push to main.</li>
+      <li>GitOps: ArgoCD watches the repo and auto-syncs staging; production requires manual promotion.</li>
+      <li>Delivery: Kustomize overlays split staging/prod configs, with image tags bumped automatically by CI.</li>
+      <li>Observability: Prometheus (kube-prometheus-stack) scrapes app metrics via a ServiceMonitor, with Grafana visualizing request rate and latency live.</li>
+      <li>Security: container runs as non-root with an explicit UID rather than relying on defaults.</li>
+      <li>Debugged real issues beyond the happy path: GitHub token scoping for workflow file pushes, Kubernetes' <code>runAsNonRoot</code> requiring an explicit UID, and a repo symlink from an accidentally-committed venv folder that broke ArgoCD's manifest rendering.</li>
     </ul>
-    <p class="outcome"><b>Outcome:</b> three real deployment failures diagnosed and recovered through Git history.</p>
+    <p class="outcome"><b>Outcome:</b> a code change pushed to main flows through tests → build → push → GitOps manifest update → ArgoCD sync → new pods running, with Git as the single source of truth and zero manual kubectl.</p>
   </div>
 </dialog>
 
