@@ -949,13 +949,13 @@ dialog[open]::backdrop{animation:bdIn .3s ease both}
           <div class="pstack"><span>Kubernetes</span><span>ArgoCD</span><span>Kustomize</span><span>Prometheus/Grafana</span></div>
           <button type="button" class="btn sm more" data-modal="dlg-gitops">Project details <span class="arw" aria-hidden="true">↗</span></button>
         </article>
-        <article class="proj tilt" style="--i:2">
-          <span class="pnum">03 / Web platform</span>
-          <h3>File Vault</h3>
-          <p>Password-protected school file storage and sharing, organized by subject and section, deployed on a custom domain.</p>
-          <div class="pstack"><span>Node.js</span><span>Express</span><span>Backblaze B2</span><span>Render</span></div>
-          <button type="button" class="btn sm more" data-modal="dlg-vault">Project details <span class="arw" aria-hidden="true">↗</span></button>
-        </article>
+       <article class="proj tilt" style="--i:2">
+  <span class="pnum">03 / Web platform</span>
+  <h3>File Vault</h3>
+  <p>Self-hosted file storage platform with zero local-disk storage, deployed with a zero-downtime production migration via DNS cutover.</p>
+  <div class="pstack"><span>Node.js</span><span>Express</span><span>Backblaze B2</span><span>Render</span><span>Cloudflare</span></div>
+  <button type="button" class="btn sm more" data-modal="dlg-vault">Project details <span class="arw" aria-hidden="true">↗</span></button>
+</article>
         <article class="proj tilt" style="--i:3">
           <span class="pnum">04 / Platform engineering</span>
           <h3>Production-Grade GitOps Delivery Platform</h3>
@@ -1134,15 +1134,14 @@ dialog[open]::backdrop{animation:bdIn .3s ease both}
   <div class="dlg">
     <button type="button" class="x" data-close aria-label="Close dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <p class="eyebrow">Selected project / Web platform</p>
-    <h3 id="dlg-vault-h">File Vault — School File Sharing App</h3>
-    <div class="meta"><span>Node.js</span><span>Express</span><span>Backblaze B2</span><span>Render</span></div>
-    <p>Built and deployed a password-protected file storage and sharing tool with subject-section organization on a custom domain.</p>
+    <h3 id="dlg-vault-h">File Vault — Self-Hosted File Storage Platform</h3>
+    <div class="meta"><span>Node.js</span><span>Express</span><span>Backblaze B2</span><span>Render</span><span>Cloudflare</span></div>
+    <p>Built and deployed a full-stack file storage app with zero local-disk storage, using Backblaze B2 (S3-compatible object storage) for a stateless, ephemeral-host-friendly architecture.</p>
     <ul>
-      <li>Built the application with Node.js and Express.</li>
-      <li>Used Backblaze B2 for file storage and Render for deployment.</li>
-      <li>Hardened the application with Helmet and rate limiting.</li>
+      <li>Executed a zero-downtime production migration for a breaking data schema change: stood up a parallel staging environment on Render, wrote a custom migration script, validated end-to-end, then performed a live DNS cutover via Cloudflare.</li>
+      <li>Hardened the app for production with CSRF protection, rate-limited authentication, secure session handling, and fail-fast startup validation for missing secrets.</li>
     </ul>
-    <p class="outcome"><b>Outcome:</b> a live, password-protected sharing tool on a custom domain.</p>
+    <p class="outcome"><b>Outcome:</b> a stateless, production-hardened file storage platform migrated live with zero downtime.</p>
   </div>
 </dialog>
 
